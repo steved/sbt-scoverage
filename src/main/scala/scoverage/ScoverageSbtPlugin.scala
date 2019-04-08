@@ -8,10 +8,10 @@ import scoverage.report.{CoberturaXmlWriter, CoverageAggregator, ScoverageHtmlWr
 object ScoverageSbtPlugin extends AutoPlugin {
 
   val OrgScoverage = "org.scoverage"
-  val ScalacRuntimeArtifact = "scalac-scoverage-runtime"
-  val ScalacPluginArtifact = "scalac-scoverage-plugin"
+  val ScalacRuntimeArtifact = "scalac-scoverage-runtime_domino"
+  val ScalacPluginArtifact = "scalac-scoverage-plugin_domino"
   // this should match the version defined in build.sbt
-  val DefaultScoverageVersion = "1.4.0-SNAPSHOT"
+  val DefaultScoverageVersion = "1.4.0"
   val autoImport = ScoverageKeys
   lazy val ScoveragePluginConfig = config("scoveragePlugin").hide
 
@@ -52,6 +52,7 @@ object ScoverageSbtPlugin extends AutoPlugin {
   ) ++ coverageSettings ++ scalacSettings
 
   private lazy val coverageSettings = Seq(
+    resolvers += "Domino Open-source Artifactory" at "https://domino.jfrog.io/domino/domino-open-source/",
     libraryDependencies  ++= {
       if (coverageEnabled.value)
         Seq(

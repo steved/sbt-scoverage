@@ -1,7 +1,8 @@
-name := "sbt-scoverage"
+name := "sbt-scoverage_domino"
 
 organization := "org.scoverage"
 
+resolvers += "Domino Open-source Artifactory" at "https://domino.jfrog.io/domino/domino-open-source/"
 sbtPlugin := true
 
 scalacOptions := Seq("-unchecked", "-deprecation", "-feature", "-encoding", "utf8")
@@ -10,7 +11,8 @@ resolvers ++= {
   if (isSnapshot.value) Seq(Resolver.sonatypeRepo("snapshots")) else Nil
 }
 
-libraryDependencies += "org.scoverage" %% "scalac-scoverage-plugin" % "1.4.0-SNAPSHOT"
+libraryDependencies += "org.scoverage" %% "scalac-scoverage-plugin_domino" % "1.4.0"
+libraryDependencies += "org.scoverage" %% "scalac-scoverage-runtime_domino" % "1.4.0"
 
 publishMavenStyle := true
 
@@ -38,12 +40,8 @@ releaseProcess := Seq[ReleaseStep](
 
 releaseCrossBuild := false
 
-publishTo := {
-  if (isSnapshot.value)
-    Some("snapshots" at "https://oss.sonatype.org/content/repositories/snapshots")
-  else
-    Some("releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2")
-}
+publishTo := Some("Artifactory Realm" at "https://domino.jfrog.io/domino/domino-open-source")
+credentials += Credentials("Artifactory Realm", "domino.jfrog.io", "username", "password")
 
 pomExtra := {
   <url>https://github.com/scoverage/sbt-scoverage</url>
