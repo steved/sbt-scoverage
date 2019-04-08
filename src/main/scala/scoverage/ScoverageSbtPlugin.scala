@@ -68,8 +68,8 @@ object ScoverageSbtPlugin extends AutoPlugin {
 
   private lazy val scalacSettings = Seq(
     scalacOptions in(Compile, compile) ++= {
-      val updateReport = update.value
       if (coverageEnabled.value) {
+        val updateReport = update.value
         val scoverageDeps: Seq[File] = updateReport matching configurationFilter(ScoveragePluginConfig.name)
         val pluginPath: File =  scoverageDeps.find(_.getAbsolutePath.contains(ScalacPluginArtifact)) match {
           case None => throw new Exception(s"Fatal: $ScalacPluginArtifact not in libraryDependencies")
@@ -106,8 +106,10 @@ object ScoverageSbtPlugin extends AutoPlugin {
     val target = crossTarget.value
     val log = streams.value.log
 
-    log.info(s"Waiting for measurement data to sync...")
-    Thread.sleep(1000) // have noticed some delay in writing on windows, hacky but works
+    if (System.getProperty("os.name") contains "Windows") {
+      log.info(s"Waiting for measurement data to sync...")
+      Thread.sleep(1000) // have noticed some delay in writing on windows, hacky but works
+    }
 
     loadCoverage(target, log) match {
       case Some(cov) =>
